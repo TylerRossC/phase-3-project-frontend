@@ -10,25 +10,41 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 const App = () => {
 
   const [users, setUsers] = useState({})
-  const [guardians, setGuardians] = useState([])
+  const [guardians, setGuardians] = useState({})
+  const [loading, setLoading] = useState(true)
 
   const fetchUsers = () => {
       fetch("http://localhost:9292/users")
           .then(res => res.json())
-          .then(data => setUsers(data))
+          .then(data => {
+            setUsers(data)
+            setLoading(false)
+            })
           // .then(data => console.log(data))
   }
   
   const fetchGuardians = () => {
-      fetch(`https://localhost:9292/guardians`)
+      fetch(`http://localhost:9292/guardians`)
       .then(res => res.json())
-      .then(data => setGuardians(data))
+      .then(data => {
+        console.log(data)
+        setGuardians(data)
+        setLoading(false)
+        })
   }
 
-  useEffect(() => {
-      fetchUsers()
-      fetchGuardians()
+  useEffect(async() => {
+      await fetchUsers()
+      await fetchGuardians()
   }, [])
+
+  if (loading){
+    return (
+      <div>
+        ...loading
+      </div>
+    )
+  }
 
     return (
         <div>
@@ -39,16 +55,16 @@ const App = () => {
             </Navbar>
             <Router>
                 <Switch>
-                    <Route path = "/userlogin">
-                        <Userlogin users = {users}/>
-                    </Route>
-                    <Route path="/usersignup">
+                    <Route exact path="/">
                         <Usersignup />
                     </Route>
-                    <Route path="/Guardians">
-                        <Guardians guardians = {guardians}/>
+                    <Route exact path = "/userlogin">
+                        <Userlogin users = {users}/>
                     </Route>
-                    <Route path="/Items">
+                    <Route exact path="/users/:id">
+                        <Guardians guardians = {guardians} users = {users}/>
+                    </Route>
+                    <Route exact path="/Items">
                         <Items />
                     </Route>
                 </Switch>

@@ -20,7 +20,7 @@ const Userlogin = ({users}) => {
 
     const compareFetchToForm = (e) => {
         e.preventDefault()
-        let user = users.data.find((a) => a.username === form.username)
+        let user = users?.data.find((a) => a.username === form.username)
             history.push(`/users/${user.id}`)
     }
 
